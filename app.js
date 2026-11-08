@@ -84,6 +84,10 @@ const CURATED_PHOTOS = {
   "uinta-mountains": {
     hero: "uintas-11.jpg",
     images: ["uintas-01.jpg","uintas-02.jpg","uintas-03.jpg","uintas-04.jpg","uintas-05.jpg","uintas-06.jpg","uintas-07.jpg","uintas-08.jpg","uintas-09.jpg","uintas-10.jpg","uintas-11.jpg","uintas-12.jpg","uintas-13.jpg"]
+  },
+  "glacier-national-park": {
+    hero: "glacier-01.jpg",
+    images: ["glacier-01.jpg","glacier-02.jpg","glacier-03.jpg","glacier-04.jpg","glacier-05.jpg","glacier-06.jpg","glacier-07.jpg","glacier-08.jpg","glacier-09.jpg","glacier-10.jpg","glacier-11.jpg","glacier-12.jpg","glacier-13.jpg","glacier-14.jpg","glacier-15.jpg","glacier-16.jpg"]
   }
 };
 function clearPlaceVisuals(){
@@ -95,7 +99,7 @@ function clearPlaceVisuals(){
   credit.innerHTML="";
   if(curated){
     hero.style.backgroundImage=`url("${curated.hero}")`;
-    gallery.innerHTML=curated.images.map((src,index)=>`<figure class="gallery-item"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="Uinta Mountains photo ${index+1}" loading="lazy"></a></figure>`).join("");
+    gallery.innerHTML=curated.images.map((src,index)=>`<figure class="gallery-item"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${id === 'glacier-national-park' ? 'Glacier National Park' : 'Uinta Mountains'} photo ${index+1}" loading="lazy"></a></figure>`).join("");
     return;
   }
   hero.style.backgroundImage="none";
