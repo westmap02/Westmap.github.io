@@ -5,14 +5,12 @@ L.tileLayer(tiles, { maxZoom: 19, attribution }).addTo(westMap);
 let stateMap;
 let activeState;
 const visualCache = new Map();
-
 Object.entries(STATES).forEach(([id, state]) => {
   L.circleMarker(state.center, { radius: 16, color: "#1c1917", weight: 2, fillColor: "#fbbf24", fillOpacity: .92 })
     .addTo(westMap)
     .bindTooltip(state.name, { permanent: true, direction: "top", className: "state-tooltip" })
     .on("click", () => navigateState(id));
 });
-
 function show(id) {
   document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
   document.getElementById(id).classList.remove("hidden");
@@ -31,7 +29,6 @@ function shortLabel(name) {
     .replace(" Mountains", " Mtns")
     .replace(" Scenic Byway", " Byway");
 }
-
 async function openState(id) {
   activeState = id;
   const state = STATES[id];
@@ -46,7 +43,6 @@ async function openState(id) {
   list.innerHTML = "";
   const matches = PLACES.filter(p => p.state === id);
   if (!matches.length) list.innerHTML = "<p>No pins yet.</p>";
-
   matches.forEach((place, index) => {
     const marker = L.marker([place.lat, place.lng]).addTo(stateMap);
     const direction = index % 2 ? "right" : "left";
@@ -65,7 +61,6 @@ async function openState(id) {
   });
   setTimeout(() => stateMap.invalidateSize(), 50);
 }
-
 function openPlace(id) {
   const p = PLACES.find(x => x.id === id);
   if (!p) return navigateHome();
@@ -79,15 +74,14 @@ function openPlace(id) {
   document.getElementById("map-link").href = `https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lng}#map=10/${p.lat}/${p.lng}`;
   clearPlaceVisuals();
 }
-
 const CURATED_PHOTOS = {
-  "glacier-national-park": {
-    hero: "glacier1.jpg",
-    images: ["glacier1.jpg","glacier2.jpg","glacier3.jpg","glacier4.jpg","glacier5.jpg","glacier6.jpg","glacier7.jpg","glacier8.jpg","glacier9.jpg","glacier10.jpg","glacier11.jpg","glacier12.jpg","glacier13.jpg","glacier14.jpg","glacier15.jpg","glacier16.jpg"]
-  },
   "uinta-mountains": {
     hero: "uintas-11.jpg",
     images: ["uintas-01.jpg","uintas-02.jpg","uintas-03.jpg","uintas-04.jpg","uintas-05.jpg","uintas-06.jpg","uintas-07.jpg","uintas-08.jpg","uintas-09.jpg","uintas-10.jpg","uintas-11.jpg","uintas-12.jpg","uintas-13.jpg"]
+  },
+  "bonneville-salt-flats": {
+    hero: "sand5.jpg",
+    images: ["sand1.jpg","sand2.jpg","sand3.jpg","sand4.jpg","sand5.jpg","sand6.jpg","sand7.jpg","sand8.jpg","sand9.jpg"]
   }
 };
 function clearPlaceVisuals(){
@@ -96,16 +90,17 @@ function clearPlaceVisuals(){
   const credit=document.getElementById("hero-credit");
   const id=location.hash.split("/")[1]||"";
   const curated=CURATED_PHOTOS[id];
+  const place=PLACES.find(p=>p.id===id);
+  const placeName=place ? place.name : "Destination";
   credit.innerHTML="";
   if(curated){
     hero.style.backgroundImage=`url("${curated.hero}")`;
-    gallery.innerHTML=curated.images.map((src,index)=>`<figure class="gallery-item"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${id === 'glacier-national-park' ? 'Glacier National Park' : 'Uinta Mountains'} photo ${index+1}" loading="lazy"></a></figure>`).join("");
+    gallery.innerHTML=curated.images.map((src,index)=>`<figure class="gallery-item"><a href="${src}" target="_blank" rel="noopener"><img src="${src}" alt="${placeName} photo ${index+1}" loading="lazy"></a></figure>`).join("");
     return;
   }
   hero.style.backgroundImage="none";
   gallery.innerHTML='<div class="gallery-empty"><span>PHOTO FIELD BOOK</span><strong>Photos coming soon</strong><p>This destination is ready for your hand-picked images.</p></div>';
 }
-
 function route() {
   const [kind, id] = location.hash.slice(1).split("/");
   if (kind === "state" && id) openState(id);
