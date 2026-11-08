@@ -86,6 +86,10 @@ const CURATED_PHOTOS = {
   "bear-lake": {
     hero: "bearlake2.jpg",
     images: ["bearlake1.jpg","bearlake2.jpg","bearlake3.jpg","bearlake4.jpg","bearlake5.jpg"]
+  },
+  "glacier-national-park": {
+    hero: "glacier8.jpg",
+    images: ["glacier1.jpg","glacier2.jpg","glacier3.jpg","glacier4.jpg","glacier5.jpg","glacier6.jpg","glacier7.jpg","glacier8.jpg","glacier9.jpg","glacier10.jpg","glacier11.jpg","glacier12.jpg","glacier13.jpg","glacier14.jpg","glacier15.jpg","glacier16.jpg"]
   }
 };
 function clearPlaceVisuals(){
