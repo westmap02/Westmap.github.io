@@ -81,13 +81,13 @@ function openPlace(id) {
 }
 
 const CURATED_PHOTOS = {
+  "glacier-national-park": {
+    hero: "glacier1.jpg",
+    images: ["glacier1.jpg","glacier2.jpg","glacier3.jpg","glacier4.jpg","glacier5.jpg","glacier6.jpg","glacier7.jpg","glacier8.jpg","glacier9.jpg","glacier10.jpg","glacier11.jpg","glacier12.jpg","glacier13.jpg","glacier14.jpg","glacier15.jpg","glacier16.jpg"]
+  },
   "uinta-mountains": {
     hero: "uintas-11.jpg",
     images: ["uintas-01.jpg","uintas-02.jpg","uintas-03.jpg","uintas-04.jpg","uintas-05.jpg","uintas-06.jpg","uintas-07.jpg","uintas-08.jpg","uintas-09.jpg","uintas-10.jpg","uintas-11.jpg","uintas-12.jpg","uintas-13.jpg"]
-  },
-  "glacier-national-park": {
-    hero: "glacier-01.jpg",
-    images: ["glacier-01.jpg","glacier-02.jpg","glacier-03.jpg","glacier-04.jpg","glacier-05.jpg","glacier-06.jpg","glacier-07.jpg","glacier-08.jpg","glacier-09.jpg","glacier-10.jpg","glacier-11.jpg","glacier-12.jpg","glacier-13.jpg","glacier-14.jpg","glacier-15.jpg","glacier-16.jpg"]
   }
 };
 function clearPlaceVisuals(){
