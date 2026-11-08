@@ -1,1 +1,31 @@
-
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Western Wilds Explorer</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><a href="index.html" class="brand">WESTERN WILDS <small>EXPLORE FURTHER</small></a></header>
+<main>
+  <section id="home-view" class="view">
+    <div class="intro"><p class="eyebrow">YOUR MAP TO THE WILD WEST</p><h1>Find your next <span>wild place.</span></h1><p>Click a western state to open its adventure map.</p></div>
+    <div class="map-card"><h2>Select a state</h2><div id="west-map" class="map"></div></div>
+  </section>
+  <section id="state-view" class="view hidden">
+    <button class="back" data-go="home">← All western states</button>
+    <p class="eyebrow">STATE ADVENTURE MAP</p><h1 id="state-title"></h1>
+    <div class="state-layout"><div id="state-map" class="map"></div><aside><h2>Featured locations</h2><div id="location-list"></div></aside></div>
+  </section>
+  <section id="place-view" class="view hidden">
+    <button class="back" data-go="state">← Back to state map</button>
+    <div id="place-hero" class="hero"><p class="eyebrow">FEATURED WILD PLACE</p><h1 id="place-title"></h1><p id="place-type"></p></div>
+    <div class="place-grid"><article><h2>About this place</h2><p id="place-description"></p><h2>Photo gallery</h2><div id="gallery" class="gallery"></div></article><aside class="activity-card"><h2>Things to do</h2><div id="activities"></div></aside></div>
+  </section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body></html>
