@@ -4,6 +4,7 @@ const westMap = L.map("west-map", { scrollWheelZoom: false }).setView([40.3, -11
 L.tileLayer(tiles, { maxZoom: 19, attribution }).addTo(westMap);
 let stateMap;
 let activeState;
+const visualCache = new Map();
 
 Object.entries(STATES).forEach(([id, state]) => {
   L.circleMarker(state.center, { radius: 16, color: "#1c1917", weight: 2, fillColor: "#fbbf24", fillOpacity: .92 })
@@ -31,12 +32,14 @@ function shortLabel(name) {
     .replace(" Scenic Byway", " Byway");
 }
 
-function openState(id) {
+async function openState(id) {
   activeState = id;
   const state = STATES[id];
   if (!state) return navigateHome();
   show("state-view");
   document.getElementById("state-title").textContent = `Explore ${state.name}`;
+  document.getElementById("state-subtitle").textContent = `${PLACES.filter(p => p.state === id).length} pinned places • build your own field guide`;
+  setStateBackdrop(id);
   if (stateMap) stateMap.remove();
   stateMap = L.map("state-map").setView(state.center, state.zoom);
   L.tileLayer(tiles, { maxZoom: 19, attribution }).addTo(stateMap);
@@ -75,7 +78,7 @@ function openPlace(id) {
   document.getElementById("place-description").textContent = p.description;
   document.getElementById("activities").innerHTML = p.activities.map(a => `<span class="tag">${a}</span>`).join("");
   document.getElementById("map-link").href = `https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lng}#map=10/${p.lat}/${p.lng}`;
-  loadCuratedCommonsGallery(p, document.getElementById("gallery"));
+  loadPlaceVisuals(p);
 }
 
 const GOOD = ["sunset", "sunrise", "golden", "panorama", "panoramic", "overlook", "aerial", "reflection", "alpenglow", "autumn", "winter", "wildflower", "milky way", "view"];
@@ -135,6 +138,22 @@ async function loadCuratedCommonsGallery(p, gallery) {
   }
 }
 
+async function visualSearch(search, limit = 12) {
+  if (visualCache.has(search)) return visualCache.get(search);
+  const pages = await commonsRequest({ generator: "search", gsrsearch: search, gsrnamespace: "6", gsrlimit: String(limit) });
+  const usable = pages.filter(page => { const i=page.imageinfo?.[0]; return i?.thumburl && i.width>=1400 && i.height>=800; }).sort((a,b)=>photoScore(b,{name:search})-photoScore(a,{name:search}));
+  visualCache.set(search, usable); return usable;
+}
+function creditHtml(page){const i=page.imageinfo?.[0],m=i?.extmetadata||{};if(!i)return "";const author=plain(m.Artist?.value)||"Wikimedia Commons contributor";const license=plain(m.LicenseShortName?.value)||"See source";return `${author} · ${license} · <a href="${i.descriptionurl}" target="_blank" rel="noopener">source</a>`;}
+async function pickBackdrop(search,target){try{const photos=await visualSearch(search,18);if(photos[0]) target.style.backgroundImage=`url("${photos[0].imageinfo[0].thumburl}")`;}catch(e){}}
+function setStateBackdrop(id){const state=STATES[id];const bg=document.getElementById("state-bg");bg.style.backgroundImage="";pickBackdrop(`${state.name} wilderness mountains landscape`,bg);}
+async function loadPlaceVisuals(p){
+ const gallery=document.getElementById("gallery"),hero=document.getElementById("place-hero"),credit=document.getElementById("hero-credit");
+ gallery.innerHTML='<p class="gallery-status">Pulling together the best real views...</p>';hero.style.backgroundImage="";credit.innerHTML="";
+ try{const placeSets=await Promise.all([visualSearch(`"${p.name}" landscape panorama`,24),visualSearch(`"${p.name}" sunset sunrise scenic`,20),visualSearch(`"${p.name}" wilderness view`,18)]);const unique=new Map();placeSets.flat().forEach(x=>unique.set(x.title,x));const shots=[...unique.values()].sort((a,b)=>photoScore(b,p)-photoScore(a,p));if(shots[0]){hero.style.backgroundImage=`url("${shots[0].imageinfo[0].thumburl}")`;credit.innerHTML=creditHtml(shots[0]);}const galleryShots=shots.slice(1,9);if(galleryShots.length){gallery.innerHTML=galleryShots.map(page=>{const i=page.imageinfo[0],m=i.extmetadata||{},author=plain(m.Artist?.value)||"Wikimedia Commons contributor",license=plain(m.LicenseShortName?.value)||"See source",caption=plain(m.ImageDescription?.value)||page.title.replace(/^File:/,"");return `<figure class="gallery-item"><a href="${i.descriptionurl}" target="_blank" rel="noopener"><img src="${i.thumburl}" alt="${caption}" loading="lazy"></a><figcaption><span>${caption}</span><small>${author} · ${license} · <a href="${i.descriptionurl}" target="_blank" rel="noopener">source</a></small></figcaption></figure>`}).join("");}else{loadCuratedCommonsGallery(p,gallery);}}catch(e){loadCuratedCommonsGallery(p,gallery);}
+}
+function setHomeBackdrop(){pickBackdrop("American West wilderness landscape mountains desert",document.getElementById("home-bg"));}
+
 function route() {
   const [kind, id] = location.hash.slice(1).split("/");
   if (kind === "state" && id) openState(id);
@@ -148,4 +167,5 @@ function route() {
 document.querySelector('[data-go="home"]').onclick = navigateHome;
 document.querySelector('[data-go="state"]').onclick = () => navigateState(activeState);
 window.addEventListener("hashchange", route);
+setHomeBackdrop();
 route();
