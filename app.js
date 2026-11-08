@@ -82,6 +82,10 @@ const CURATED_PHOTOS = {
   "bonneville-salt-flats": {
     hero: "sand5.jpg",
     images: ["sand1.jpg","sand2.jpg","sand3.jpg","sand4.jpg","sand5.jpg","sand6.jpg","sand7.jpg","sand8.jpg","sand9.jpg"]
+  },
+  "bear-lake": {
+    hero: "bearlake2.jpg",
+    images: ["bearlake1.jpg","bearlake2.jpg","bearlake3.jpg","bearlake4.jpg","bearlake5.jpg"]
   }
 };
 function clearPlaceVisuals(){
